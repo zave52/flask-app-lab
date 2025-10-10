@@ -16,12 +16,12 @@ def main() -> Response:
 
 @app.route("/resume")
 def resume() -> str:
-    return render_template("resume.html")
+    return render_template("pages/resume.html")
 
 
 @app.route("/contacts")
 def contacts() -> str:
-    return render_template("contact.html")
+    return render_template("pages/contact.html")
 
 
 if __name__ == "__main__":

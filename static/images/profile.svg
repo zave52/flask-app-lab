@@ -1,0 +1,7 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="#0d6efd"/>
+  <circle cx="200" cy="150" r="60" fill="#ffffff"/>
+  <path d="M 200 220 Q 140 240 100 320 L 300 320 Q 260 240 200 220" fill="#ffffff"/>
+  <text x="200" y="370" font-family="Arial, sans-serif" font-size="24" fill="#ffffff" text-anchor="middle" font-weight="bold">ZS</text>
+</svg>
+

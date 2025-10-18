@@ -1,4 +1,4 @@
-from flask import request, redirect, url_for, render_template
+from flask import request, redirect, url_for, render_template, flash, session
 
 from . import users_bp
 
@@ -26,3 +26,34 @@ def admin():
     )
     print(to_url)
     return redirect(to_url)
+
+
+@users_bp.route("/login", methods=["GET", "POST"])
+def login():
+    if "username" in session:
+        return redirect(url_for("users_bp.profile"))
+
+    if request.method == 'POST':
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if username in VALID_USERS and VALID_USERS[username] == password:
+            session["username"] = username
+            flash("Успішний вхід в систему!", "success")
+            return redirect(url_for("users_bp.profile"))
+        else:
+            flash("Невірне ім'я користувача або пароль", "error")
+            return redirect(url_for("users_bp.login"))
+
+    return render_template("users/login.html")
+
+
+@users_bp.route("/profile")
+def profile():
+    username = session.get("username")
+
+    if not username:
+        flash("Будь ласка, увійдіть в систему", "warning")
+        return redirect(url_for('users_bp.login'))
+
+    return render_template("users/profile.html", username=username)

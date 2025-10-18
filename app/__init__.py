@@ -1,7 +1,10 @@
+import os
+
 from flask import Flask
 
 app = Flask(__name__)
 app.config.from_pyfile("../config.py")
+app.secret_key = os.getenv("SECRET_KEY")
 
 from . import views
 

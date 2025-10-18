@@ -12,6 +12,32 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+<nav class="main-nav">
+  <div class="container">
+    <ul class="nav-list">
+      <li><a href="{{ url_for('main') }}" class="nav-link">Головна</a></li>
+      <li><a href="{{ url_for('products_bp.get_products') }}" class="nav-link">Продукти</a></li>
+      <li><a href="{{ url_for('users_bp.profile') }}" class="nav-link">Профіль</a></li>
+      <li><a href="{{ url_for('users_bp.login') }}" class="nav-link">Вхід</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">
+            {{ message }}
+            <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+</div>
+
 {% block content %}
   <h1>Test application with the structure proposed by the teacher</h1>
 {% endblock %}
@@ -19,6 +45,5 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
-{% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -15,6 +15,87 @@
       <button type="submit" class="logout-btn">Вийти</button>
     </form>
 
+    <div class="cookies-section">
+      <h3>Управління Cookies</h3>
+
+      <div class="cookie-form-container">
+        <h4>Додати Cookie</h4>
+        <form method="POST" action="{{ url_for('users_bp.add_cookie') }}" class="cookie-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cookie_key">Ключ:</label>
+              <input type="text" id="cookie_key" name="cookie_key" class="input-field" required
+                     placeholder="Наприклад: theme">
+            </div>
+
+            <div class="form-group">
+              <label for="cookie_value">Значення:</label>
+              <input type="text" id="cookie_value" name="cookie_value" class="input-field" required
+                     placeholder="Наприклад: dark">
+            </div>
+
+            <div class="form-group">
+              <label for="cookie_max_age">Термін дії (секунди):</label>
+              <input type="number" id="cookie_max_age" name="cookie_max_age" class="input-field"
+                     placeholder="За замовчуванням: 3600">
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn">Додати Cookie</button>
+        </form>
+      </div>
+
+      <div class="cookie-delete-container">
+        <h4>Видалити Cookie</h4>
+        <div class="delete-buttons">
+          <form method="POST" action="{{ url_for('users_bp.delete_all_cookies') }}" style="display: inline;">
+            <button type="submit" class="delete-all-btn"
+                    onclick="return confirm('Ви впевнені, що хочете видалити всі cookies?')">
+              Видалити всі Cookies
+            </button>
+          </form>
+
+          <form method="POST" action="{{ url_for('users_bp.delete_cookie') }}" class="delete-single-form">
+            <div class="form-inline">
+              <input type="text" name="cookie_key" class="input-field" placeholder="Ключ cookie для видалення" required>
+              <button type="submit" class="delete-btn">Видалити</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="cookies-table-container">
+        <h4>Поточні Cookies</h4>
+        {% if cookies %}
+          <table class="cookies-table">
+            <thead>
+            <tr>
+              <th>Ключ</th>
+              <th>Значення</th>
+              <th>Дія</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for key, value in cookies.items() %}
+              <tr>
+                <td><strong>{{ key }}</strong></td>
+                <td>{{ value }}</td>
+                <td>
+                  <form method="POST" action="{{ url_for('users_bp.delete_cookie') }}" style="display: inline;">
+                    <input type="hidden" name="cookie_key" value="{{ key }}">
+                    <button type="submit" class="table-delete-btn">Видалити</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p class="no-cookies">Немає збережених cookies</p>
+        {% endif %}
+      </div>
+    </div>
+
     <nav class="greeting-nav" style="margin-top: 30px;">
       <ul>
         <li>

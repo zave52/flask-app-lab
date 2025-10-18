@@ -1,10 +1,18 @@
-from flask import request, redirect, url_for, render_template, flash, session, make_response
+from flask import (
+    request,
+    redirect,
+    url_for,
+    render_template,
+    flash,
+    session,
+    make_response
+)
 
 from . import users_bp
 
 VALID_USERS = {
-    'admin': 'password123',
-    'user': 'pass456'
+    "admin": "password123",
+    "user": "pass456"
 }
 
 
@@ -33,7 +41,7 @@ def login():
     if "username" in session:
         return redirect(url_for("users_bp.profile"))
 
-    if request.method == 'POST':
+    if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
 
@@ -54,11 +62,18 @@ def profile():
 
     if not username:
         flash("Будь ласка, увійдіть в систему", "warning")
-        return redirect(url_for('users_bp.login'))
+        return redirect(url_for("users_bp.login"))
 
     cookies = request.cookies.to_dict()
 
-    return render_template("users/profile.html", username=username, cookies=cookies)
+    current_theme = request.cookies.get("theme", "light")
+
+    return render_template(
+        "users/profile.html",
+        username=username,
+        cookies=cookies,
+        theme=current_theme
+    )
 
 
 @users_bp.route("/logout", methods=["POST"])
@@ -73,7 +88,7 @@ def add_cookie():
     username = session.get("username")
     if not username:
         flash("Будь ласка, увійдіть в систему", "warning")
-        return redirect(url_for('users_bp.login'))
+        return redirect(url_for("users_bp.login"))
 
     cookie_key = request.form.get("cookie_key")
     cookie_value = request.form.get("cookie_value")
@@ -88,7 +103,10 @@ def add_cookie():
     response = make_response(redirect(url_for("users_bp.profile")))
     response.set_cookie(cookie_key, cookie_value, max_age=max_age)
 
-    flash(f"Cookie '{cookie_key}' успішно додано (термін дії: {max_age} секунд)", "success")
+    flash(
+        f"Cookie '{cookie_key}' успішно додано (термін дії: {max_age} секунд)",
+        "success"
+    )
     return response
 
 
@@ -133,9 +151,29 @@ def delete_all_cookies():
 
     cookies_count = 0
     for cookie_key in all_cookies.keys():
-        if not cookie_key.startswith('session'):
+        if not cookie_key.startswith("session"):
             response.delete_cookie(cookie_key)
             cookies_count += 1
 
     flash(f"Видалено {cookies_count} cookie(s)", "info")
+    return response
+
+
+@users_bp.route("/set_theme/<string:theme>")
+def set_theme(theme):
+    username = session.get("username")
+    if not username:
+        flash("Будь ласка, увійдіть в систему", "warning")
+        return redirect(url_for("users_bp.login"))
+
+    valid_themes = ["light", "dark"]
+    if theme not in valid_themes:
+        flash("Невірна кольорова схема", "error")
+        return redirect(url_for("users_bp.profile"))
+
+    response = make_response(redirect(url_for("users_bp.profile")))
+    response.set_cookie("theme", theme, max_age=30 * 24 * 60 * 60)
+
+    theme_name = "темну" if theme == "dark" else "світлу"
+    flash(f"Кольорову схему змінено на {theme_name}", "success")
     return response

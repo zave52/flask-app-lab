@@ -11,6 +11,7 @@ body {
     padding: 20px;
 }
 
+/* Greeting page styles */
 .greeting-container {
     background: white;
     border-radius: 10px;
@@ -33,6 +34,7 @@ body {
     margin: 15px 0;
 }
 
+/* Navigation for greeting page */
 .greeting-nav {
     background: #34495e;
     border-radius: 8px;
@@ -71,6 +73,72 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Products list styles */
+.products-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    margin: 30px 0;
+}
+
+.product-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 25px;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    border-color: #3498db;
+}
+
+.product-card h3 {
+    color: #2c3e50;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.product-card p {
+    color: #666;
+    font-size: 1em;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.product-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #27ae60;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.product-link:hover {
+    background: #229954;
+    transform: scale(1.05);
+}
+
+/* Product detail page styles */
+.product-description {
+    font-size: 1.3em;
+    color: #555;
+    margin: 20px 0;
+}
+
+.product-id {
+    font-size: 1em;
+    color: #999;
+    font-style: italic;
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
     .greeting-container {
         padding: 20px;
@@ -90,5 +158,8 @@ body {
         width: 100%;
         text-align: center;
     }
-}
 
+    .products-list {
+        grid-template-columns: 1fr;
+    }
+}

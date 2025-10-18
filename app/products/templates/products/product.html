@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - Product Details{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <nav class="greeting-nav" style="margin-top: 30px;">
+      <ul>
+        <li>
+          <a href="{{ url_for('products_bp.get_products') }}">Back to Products</a>
+        </li>
+        <li>
+          <a href="{{ url_for('users_bp.greetings', name='Visitor') }}">Go to Greetings</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="greeting-container">
+      <h2>{{ product.name }}</h2>
+      <p class="product-description">{{ product.description }}</p>
+      <p class="product-id">Product ID: {{ product.id }}</p>
+    </div>
+  </div>
+{% endblock %}

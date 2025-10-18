@@ -57,3 +57,10 @@ def profile():
         return redirect(url_for('users_bp.login'))
 
     return render_template("users/profile.html", username=username)
+
+
+@users_bp.route("/logout", methods=["POST"])
+def logout():
+    session.pop("username", None)
+    flash("Ви успішно вийшли з системи", "info")
+    return redirect(url_for("users_bp.login"))

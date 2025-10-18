@@ -2,6 +2,11 @@ from flask import request, redirect, url_for, render_template
 
 from . import users_bp
 
+VALID_USERS = {
+    'admin': 'password123',
+    'user': 'pass456'
+}
+
 
 @users_bp.route("/hi/<name>")
 def greetings(name):

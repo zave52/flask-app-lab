@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Expense{% endblock %}
+
+{% block content %}
+  <div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow">
+          <div class="card-header bg-warning text-dark">
+            <h2 class="mb-0"><i class="bi bi-pencil"></i> Edit Expense</h2>
+          </div>
+          <div class="card-body">
+            <form method="POST" action="{{ url_for('expenses_bp.edit', id=expense.id) }}" novalidate>
+              {{ form.hidden_tag() }}
+
+              <div class="mb-3">
+                {{ form.title.label(class="form-label") }}
+                {{ form.title(class="form-control" + (" is-invalid" if form.title.errors else "")) }}
+                {% if form.title.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.title.errors %}{{ error }}{% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="mb-3">
+                {{ form.description.label(class="form-label") }}
+                {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), rows=4) }}
+                {% if form.description.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.description.errors %}{{ error }}{% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="mb-3">
+                {{ form.amount.label(class="form-label") }}
+                <div class="input-group">
+                  {{ form.amount(class="form-control" + (" is-invalid" if form.amount.errors else ""), step="0.01") }}
+                  <span class="input-group-text">UAH</span>
+                </div>
+                {% if form.amount.errors %}
+                  <div class="invalid-feedback d-block">
+                    {% for error in form.amount.errors %}{{ error }}{% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="mb-3">
+                {{ form.date.label(class="form-label") }}
+                {{ form.date(class="form-control" + (" is-invalid" if form.date.errors else "")) }}
+                {% if form.date.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.date.errors %}{{ error }}{% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="mb-3">
+                {{ form.category_id.label(class="form-label") }}
+                {{ form.category_id(class="form-select" + (" is-invalid" if form.category_id.errors else "")) }}
+                {% if form.category_id.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.category_id.errors %}{{ error }}{% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{{ url_for('expenses_bp.detail', id=expense.id) }}" class="btn btn-secondary">
+                  <i class="bi bi-x-circle"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-warning">
+                  <i class="bi bi-check-circle"></i> Save changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -6,29 +6,15 @@ from flask import (
     url_for,
     render_template,
     flash,
-    session,
     abort
 )
-
-from sqlalchemy import select, func, desc, asc, literal_column
+from flask_login import login_required, current_user
+from sqlalchemy import select, func, literal_column
 
 from app import db
 from . import expenses_bp
 from .forms import ExpenseForm, SearchForm
 from .models import Expense, ExpenseCategory
-
-
-def login_required(f):
-    from functools import wraps
-
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'username' not in session:
-            flash('Please log in to continue', 'warning')
-            return redirect(url_for('users_bp.login'))
-        return f(*args, **kwargs)
-
-    return decorated_function
 
 
 @expenses_bp.route('/')
@@ -94,7 +80,7 @@ def create():
             amount=form.amount.data,
             date=datetime.combine(form.date.data, datetime.min.time()),
             category_id=form.category_id.data,
-            owner_username=session['username']
+            owner_username=current_user.username
         )
 
         db.session.add(expense)
@@ -113,7 +99,7 @@ def detail(id):
     if expense is None:
         abort(404)
 
-    is_owner = session['username'] == expense.owner_username
+    is_owner = current_user.username == expense.owner_username
 
     return render_template(
         'expenses/detail.html',
@@ -129,7 +115,7 @@ def edit(id):
     if expense is None:
         abort(404)
 
-    if session['username'] != expense.owner_username:
+    if current_user.username != expense.owner_username:
         flash('You do not have permission to edit this expense', 'error')
         return redirect(url_for('expenses_bp.detail', id=id))
 
@@ -166,7 +152,7 @@ def delete(id):
     if expense is None:
         abort(404)
 
-    if session['username'] != expense.owner_username:
+    if current_user.username != expense.owner_username:
         flash('You do not have permission to delete this expense', 'error')
         return redirect(url_for('expenses_bp.detail', id=id))
 
@@ -189,7 +175,7 @@ def categories():
         count = db.session.execute(
             select(func.count()).select_from(Expense).where(
                 Expense.category_id == category.id
-                )
+            )
         ).scalar() or 0
         total = db.session.execute(
             select(
@@ -213,13 +199,13 @@ def categories():
 @expenses_bp.route('/my-expenses')
 @login_required
 def my_expenses():
-    username = session['username']
-
     search_query = request.args.get('search', '').strip()
     sort_by = request.args.get('sort_by', 'date')
     order = request.args.get('order', 'desc')
 
-    stmt = select(Expense).where(Expense.owner_username == username)
+    stmt = select(Expense).where(
+        Expense.owner_username == current_user.username
+    )
 
     if search_query:
         stmt = stmt.where(Expense.title.ilike(f'%{search_query}%'))

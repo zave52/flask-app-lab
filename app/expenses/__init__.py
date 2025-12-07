@@ -8,4 +8,3 @@ expenses_bp = Blueprint(
 )
 
 from . import views
-

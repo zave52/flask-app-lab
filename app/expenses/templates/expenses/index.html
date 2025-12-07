@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Expenses{% endblock %}
+
+{% block content %}
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>All Expenses</h1>
+      <div>
+        <a href="{{ url_for('expenses_bp.my_expenses') }}" class="btn btn-secondary me-2">
+          <i class="bi bi-person"></i> My Expenses
+        </a>
+        <a href="{{ url_for('expenses_bp.categories') }}" class="btn btn-info me-2">
+          <i class="bi bi-folder"></i> Categories
+        </a>
+        <a href="{{ url_for('expenses_bp.create') }}" class="btn btn-primary">
+          <i class="bi bi-plus-circle"></i> Add Expense
+        </a>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <form method="GET" action="{{ url_for('expenses_bp.index') }}" class="row g-3">
+          <div class="col-md-6">
+            <label for="search" class="form-label">Search by title</label>
+            <input type="text" class="form-control" id="search" name="search"
+                   value="{{ search_query }}" placeholder="Enter expense title...">
+          </div>
+          <div class="col-md-3">
+            <label for="sort_by" class="form-label">Sort by</label>
+            <select class="form-select" id="sort_by" name="sort_by">
+              <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Date</option>
+              <option value="amount" {% if sort_by == 'amount' %}selected{% endif %}>Amount</option>
+              <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Title</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label for="order" class="form-label">Order</label>
+            <select class="form-select" id="order" name="order">
+              <option value="desc" {% if order == 'desc' %}selected{% endif %}>Descending</option>
+              <option value="asc" {% if order == 'asc' %}selected{% endif %}>Ascending</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-search"></i> Search
+            </button>
+            <a href="{{ url_for('expenses_bp.index') }}" class="btn btn-secondary">
+              <i class="bi bi-x-circle"></i> Reset
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="alert alert-info">
+      <strong>Total expenses:</strong> {{ expenses|length }} |
+      <strong>Total amount:</strong> {{ "%.2f"|format(total_amount) }} UAH
+    </div>
+
+    {% if expenses %}
+      <div class="row">
+        {% for expense in expenses %}
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm">
+              <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">{{ expense.title }}</h5>
+                <span class="badge bg-light text-dark">{{ expense.category.name }}</span>
+              </div>
+              <div class="card-body">
+                <p class="card-text text-muted">
+                  {% if expense.description %}
+                    {{ expense.description[:100] }}{% if expense.description|length > 100 %}...{% endif %}
+                  {% else %}
+                    <em>No description</em>
+                  {% endif %}
+                </p>
+                <h4 class="text-danger">{{ "%.2f"|format(expense.amount) }} UAH</h4>
+                <p class="text-muted mb-2">
+                  <i class="bi bi-calendar"></i> {{ expense.date.strftime('%d.%m.%Y') }}
+                </p>
+                <p class="text-muted mb-0">
+                  <i class="bi bi-person"></i> {{ expense.owner_username }}
+                </p>
+              </div>
+              <div class="card-footer">
+                <a href="{{ url_for('expenses_bp.detail', id=expense.id) }}"
+                   class="btn btn-sm btn-outline-primary w-100">
+                  Details <i class="bi bi-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-warning text-center">
+        <h4>No expenses found</h4>
+        <p>{% if search_query %}Try changing search parameters{% else %}Add your first expense!{% endif %}</p>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
